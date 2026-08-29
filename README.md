@@ -9,7 +9,7 @@
 A standalone, non-destructive, and distribution-safe port of the **Caelestia Desktop Environment** for Hyprland on **Debian, Parrot OS, Ubuntu**, and general Linux distributions.
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Caelestia Desktop Showcase" width="100%">
+  <img src="assets/caelestia-demo.gif" alt="Caelestia Desktop Showcase" width="100%">
 </p>
 
 ---
