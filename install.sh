@@ -154,6 +154,7 @@ install_dependencies() {
             python3
             python3-pip
             python3-setuptools
+            python3-pil
             brightnessctl
             wireplumber
             pipewire-audio
@@ -206,7 +207,7 @@ install_caelestia_cli() {
     fi
 
     log_info "Installing ${cli_src} using pip..."
-    pip install --upgrade --no-deps --break-system-packages "${cli_src}" || {
+    pip install --upgrade --break-system-packages "${cli_src}" || {
         log_warn "pip install failed; attempting alternative install..."
         python3 -m pip install --user --break-system-packages "${cli_src}"
     }
@@ -432,6 +433,14 @@ main() {
                 ;;
         esac
     done
+
+    # If dry-run without options, default to full preview
+    if [ "$DRY_RUN" = true ] && [ "$OPT_ALL" = false ] && [ "$OPT_DEPS" = false ] && \
+       [ "$OPT_CLI" = false ] && [ "$OPT_DOTS" = false ] && [ "$OPT_APPS" = false ] && \
+       [ "$OPT_PAM" = false ] && [ "$OPT_BACKUP_ONLY" = false ]; then
+        OPT_ALL=true
+        log_info "Running full installation preview in DRY-RUN mode..."
+    fi
 
     # If no flags passed, prompt interactively
     if [ "$OPT_ALL" = false ] && [ "$OPT_DEPS" = false ] && [ "$OPT_CLI" = false ] && \

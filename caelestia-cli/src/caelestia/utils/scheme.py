@@ -226,6 +226,8 @@ def get_scheme() -> Scheme:
 
 
 def get_scheme_names() -> list[str]:
+    if not scheme_data_dir.exists():
+        return ["dynamic"]
     return [*(f.name for f in scheme_data_dir.iterdir() if f.is_dir()), "dynamic"]
 
 
@@ -233,9 +235,13 @@ def get_scheme_flavours(name: str | None = None) -> list[str]:
     if name is None:
         name = get_scheme().name
 
-    return (
-        ["default", "hard"] if name == "dynamic" else [f.name for f in (scheme_data_dir / name).iterdir() if f.is_dir()]
-    )
+    if name == "dynamic" or not scheme_data_dir.exists():
+        return ["tonalSpot", "content", "expressive", "fidelity", "monochrome", "neutral", "rainbow", "vibrant"]
+
+    target = scheme_data_dir / name
+    if not target.exists():
+        return []
+    return [f.stem for f in target.iterdir() if f.is_file() and f.suffix == ".json"]
 
 
 def get_scheme_modes(name: str | None = None, flavour: str | None = None) -> list[str]:

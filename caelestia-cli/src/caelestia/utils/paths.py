@@ -23,8 +23,12 @@ user_config_path: Path = c_config_dir / "cli.json"
 
 # Robust resolution for package data
 _pkg_data_dir = Path(__file__).parent.parent / "data"
+_user_shared_data = data_dir / "caelestia/data"
+
 if (_pkg_data_dir / "templates").exists():
     cli_data_dir: Path = _pkg_data_dir
+elif (_user_shared_data / "templates").exists():
+    cli_data_dir: Path = _user_shared_data
 elif Path("/usr/local/share/caelestia/data").exists():
     cli_data_dir: Path = Path("/usr/local/share/caelestia/data")
 elif Path("/usr/share/caelestia/data").exists():
@@ -58,40 +62,37 @@ recording_path: Path = c_state_dir / "record/recording.mp4"
 recording_notif_path: Path = c_state_dir / "record/notifid.txt"
 
 
-def compute_hash(path: Path | str) -> str:
-    sha = hashlib.sha256()
+def get_config() -> dict[str, Any]:
+    if not user_config_path.exists():
+        return {}
 
-    with open(path, "rb") as f:
-        while chunk := f.read(8192):
-            sha.update(chunk)
-
-    return sha.hexdigest()
+    with user_config_path.open() as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            warn(f"Failed to parse config file: {user_config_path}")
+            return {}
 
 
 def atomic_write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    f = tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False)
-    try:
-        with f:
-            f.write(content)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(f.name, path)
-    except BaseException:
-        os.unlink(f.name)
-        raise
+    with tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False) as f:
+        f.write(content)
+        temp_name = f.name
+    os.replace(temp_name, path)
 
 
-def atomic_dump(path: Path, content: dict[str, Any]) -> None:
-    atomic_write(path, json.dumps(content))
+def atomic_dump(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False) as f:
+        json.dump(obj, f, indent=2)
+        temp_name = f.name
+    os.replace(temp_name, path)
 
 
-def get_config() -> dict[str, Any]:
-    try:
-        if user_config_path.exists():
-            return json.loads(user_config_path.read_text())
-    except json.JSONDecodeError:
-        warn("failed to parse config, invalid JSON")
-    except Exception:
-        pass
-    return {}
+def compute_hash(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as f:
+        while chunk := f.read(8192):
+            hasher.update(chunk)
+    return hasher.hexdigest()

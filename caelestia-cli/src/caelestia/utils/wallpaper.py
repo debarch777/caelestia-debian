@@ -49,11 +49,11 @@ def get_wallpapers(args: Namespace) -> list[Path]:
 
     walls = [f for f in directory.rglob("*") if is_valid_image(f)]
 
-    if args.no_filter:
-        return walls
-
-    monitors = cast(list[dict[str, int]], message("monitors"))
-    filter_size = min(m["width"] for m in monitors), min(m["height"] for m in monitors)
+    try:
+        monitors = cast(list[dict[str, int]], message("monitors"))
+        filter_size = min(m["width"] for m in monitors), min(m["height"] for m in monitors)
+    except Exception:
+        filter_size = (1920, 1080)
 
     return [f for f in walls if check_wall(f, filter_size, args.threshold)]
 
