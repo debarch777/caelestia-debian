@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec google-chrome --app=https://web.whatsapp.com --class=whatsapp "$@"

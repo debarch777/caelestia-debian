@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if flatpak info com.discordapp.Discord >/dev/null 2>&1; then
+    exec flatpak run com.discordapp.Discord "$@"
+elif flatpak info dev.vencord.Vesktop >/dev/null 2>&1; then
+    exec flatpak run dev.vencord.Vesktop "$@"
+fi

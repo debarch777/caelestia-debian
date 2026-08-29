@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=WhatsApp
+Comment=WhatsApp Web Client
+Exec=/home/ghostrat/.local/bin/whatsapp
+Icon=whatsapp
+Terminal=false
+Type=Application
+Categories=Network;InstantMessaging;Chat;
+StartupWMClass=whatsapp
