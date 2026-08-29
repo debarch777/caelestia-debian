@@ -9,8 +9,8 @@ This guide covers installing and setting up the Caelestia Hyprland desktop envir
 Clone the repository and run the safe, non-destructive installer:
 
 ```bash
-git clone https://github.com/your-username/caelestia-dots.git
-cd caelestia-dots
+git clone https://github.com/debarch777/caelestia-debian.git
+cd caelestia-debian
 ./install.sh
 ```
 

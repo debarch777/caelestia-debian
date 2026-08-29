@@ -30,8 +30,8 @@ A standalone, non-destructive, and distribution-safe port of the **Caelestia Des
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/caelestia-dots.git
-cd caelestia-dots
+git clone https://github.com/debarch777/caelestia-debian.git
+cd caelestia-debian
 ```
 
 ### 2. Run the Installer
